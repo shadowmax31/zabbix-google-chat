@@ -18,7 +18,7 @@ import configparser
 
 class ChatSender:
 
-    INI_FILE = '/usr/share/zabbix/alertscripts/google_chat.ini'
+    INI_FILE = '/usr/share/zabbix/alertscripts/zabbix-google-chat/google_chat.ini'
 
     PROBLEM_IMG = 'https://png.pngtree.com/svg/20161208/status_warning_336325.png'
     ACK_IMG = 'https://static1.squarespace.com/static/549db876e4b05ce481ee4649/t/54a47a31e4b0375c08400709/1472574912591/form-3.png'
