@@ -9,7 +9,7 @@ import configparser
 
 #
 # Google Chat API
-# Script para envio de notificacoes Zabbix em grupos do Google Chat
+# Scripting Zabbix Notifications in Google Chat Groups
 #
 # Dependencias:
 #   pip install httplib2
@@ -18,7 +18,7 @@ import configparser
 
 class ChatSender:
 
-    INI_FILE = '/usr/local/share/zabbix/alertscripts/google_chat.ini'
+    INI_FILE = '/usr/share/zabbix/alertscripts/google_chat.ini'
 
     PROBLEM_IMG = 'https://png.pngtree.com/svg/20161208/status_warning_336325.png'
     ACK_IMG = 'https://static1.squarespace.com/static/549db876e4b05ce481ee4649/t/54a47a31e4b0375c08400709/1472574912591/form-3.png'
@@ -34,14 +34,14 @@ class ChatSender:
             if cp.has_section('chat'):
                 self.webhook = cp['chat'][webhook_name]
         except:
-            print('Falha na leitura do arquivo de configuracao')
+            print('Failed to read configuration file')
 
         self.evt_thread = self.readEventThread()
         today = datetime.datetime.now().strftime("%d-%m-%Y")
         date = {}
         date['date'] = today
 
-        # Zera o conteudo do arquivo de mapeamento caso o valor da chave 'date' seja diferente do dia atual
+        # Reset the contents of the mapping file if key value 'date' differs from current day
         try:
             if self.evt_thread['date'] and self.evt_thread['date'] != today:
                 with open(self.datafile, 'w') as f:
@@ -57,19 +57,19 @@ class ChatSender:
 
         status = event[0]
 
-        # Monta titulo e imagem do card
+        # Set card title and image
         stat = None
         if status == "0":
-            stat = "Problema"
+            stat = "Problem"
             image_url = self.PROBLEM_IMG
         elif status == "1":
-            stat = "Resolvido"
+            stat = "Resolved"
             image_url = self.RESOLVED_IMG
         elif status == "2":
-            stat = "Reconhecido"
+            stat = "Acknowledged"
             image_url = self.ACK_IMG
 
-        # Se for uma mensagem de problema ou resolucao
+        # If it is a problem or resolution message
         if status == "0" or status == "1":
             time = event[1]
             date = event[2]
@@ -84,7 +84,7 @@ class ChatSender:
             bot_message = {
             "cards": [ 
               { "header": 
-                { "title": "Severidade: " + severity,
+                { "title": "Severity: " + severity,
                   "subtitle": stat,
                   "imageUrl": image_url,
                   "imageStyle": "IMAGE"
@@ -92,7 +92,7 @@ class ChatSender:
                 "sections": [
                   { "widgets": [
                     { "keyValue": {
-                        "topLabel": "Alarme",
+                        "topLabel": "Alarm",
                         "content": trigger_name,
                         "contentMultiline": "true"
                       }
@@ -104,12 +104,12 @@ class ChatSender:
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Data/Hora",
+                        "topLabel": "Date/Time",
                         "content": date + " - " + time
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "ID do Evento",
+                        "topLabel": "Event ID",
                         "content": self.event_id
                       }
                     }
@@ -117,7 +117,7 @@ class ChatSender:
                   { "widgets": [
                     { "buttons": [
                       { "textButton": 
-                        { "text": "Ver o evento no ZABBIX",
+                        { "text": "View event on ZABBIX",
                           "onClick": {
                             "openLink": {
                               "url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
@@ -130,7 +130,7 @@ class ChatSender:
               ]}
             ]}
 
-        # Se for uma mensagem de reconhecimento
+        # If it is an acknowledgment message
         elif status == "2":
             time = event[1]
             date = event[2]
@@ -140,10 +140,10 @@ class ChatSender:
             self.event_id = event[6]
             self.trigger_id = event[7]
 
-            if event_status == "PROBLEM":
-                event_status = "Ativo"
-            elif event_status == "RESOLVED":
-                event_status = "Resolvido"
+#            if event_status == "PROBLEM":
+#                event_status = "Ativo"
+#            elif event_status == "RESOLVED":
+#                event_status = "Resolvido"
 
             bot_message = {
             "cards": [ 
@@ -156,23 +156,23 @@ class ChatSender:
                 "sections": [
                   { "widgets": [
                     { "keyValue": {
-                        "topLabel": "Mensagem",
+                        "topLabel": "Message",
                         "content": ack_message,
                         "contentMultiline": "true"
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Status atual do alarme",
+                        "topLabel": "Current Alarm Status",
                         "content": event_status
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "Data/Hora",
+                        "topLabel": "Date/Time",
                         "content": date + " - " + time
                       }
                     },
                     { "keyValue": {
-                        "topLabel": "ID do Evento",
+                        "topLabel": "Event ID",
                         "content": self.event_id
                       }
                     }
@@ -180,7 +180,7 @@ class ChatSender:
                   { "widgets": [
                     { "buttons": [
                       { "textButton": 
-                        { "text": "Ver o evento no ZABBIX",
+                        { "text": "View event on ZABBIX",
                           "onClick": {
                             "openLink": {
                               "url": self.zabbix_url + "/tr_events.php?triggerid=" + self.trigger_id + "&eventid=" + self.event_id
@@ -193,14 +193,14 @@ class ChatSender:
               ]}
             ]}
 
-        # verifica se ja possui thread, adicionando a thread na mensagem caso positivo
+        # Check if Event already has a thread
         if self.trigger_id in self.evt_thread:
             self.thread = self.evt_thread[self.trigger_id]
             bot_message['thread'] = { "name": self.thread }
 
         message_headers = { 'Content-Type': 'application/json; charset=UTF-8'}
 
-        # faz requisicao http na API
+        # HTTP API Request
         http_obj = Http()
         response = http_obj.request(
             uri=url,
@@ -209,12 +209,12 @@ class ChatSender:
             body=dumps(bot_message),
         )
 
-        # pega a thread da resposta da requisicao e armazena
+        # Take the request response thread and store
         self.thread = json.loads(response[1])['thread']['name']
         event_thread = { self.trigger_id : self.thread }
         self.writeEventThread(event_thread)
 
-    # Metodo que le o arquivo de mapeamento evento - thread
+    # Reads the eventsthreads.json mapping file
     def readEventThread(self):
         try:
             with open(self.datafile) as f:
@@ -223,7 +223,7 @@ class ChatSender:
             result = {}
         return result
 
-    # Metodo que escreve novo mapeamento evento - thread no arquivo de mapeamento
+    # Writes threads to eventsthreads.json
     def writeEventThread(self, event_thread):
         content = self.readEventThread()
         if self.trigger_id not in content:
@@ -234,11 +234,11 @@ class ChatSender:
 
 if __name__ == '__main__':
 
-    # armazena argumentos do script repassados pelo Zabbix (sala e mensagem)
+    # Stores script arguments passed by Zabbix (room and message)
     webhook_name = sys.argv[1]
     msg = sys.argv[2]
 
-    # Faz split da mensagem recebido do Zabbix e inicia tratamento das informacoes
+    # Splits message received from Zabbix and starts processing information
     event = msg.split('#')
     cs = ChatSender(webhook_name)
     cs.sendMessage(event)
