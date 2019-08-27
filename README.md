@@ -7,7 +7,7 @@ https://medium.com/monitoracaodeti/enviando-notifica%C3%A7%C3%B5es-do-zabbix-via
 
 ## Setup
 
-    cd `zabbix_server -h | grep alertscripts | awk -F\" '{print $2}'`
+    cd `cat /etc/zabbix/zabbix_server.conf | grep ^AlertScriptsPath | awk -F= '{print $2}'`
     git clone https://github.com/ctrl-freak/zabbix-google-chat.git
     cd zabbix-google-chat
     cp google_chat.example.ini google_chat.ini
