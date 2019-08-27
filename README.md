@@ -11,7 +11,7 @@ https://medium.com/monitoracaodeti/enviando-notifica%C3%A7%C3%B5es-do-zabbix-via
     git clone https://github.com/ctrl-freak/zabbix-google-chat.git
     cd zabbix-google-chat
     cp google_chat.example.ini google_chat.ini
-    chmod + x google_chat.py
+    chmod +x google_chat.py
     chown zabbix:zabbix google_chat.py google_chat.ini eventsthreads.json
 
 ## Create Google Hangouts Chat Room
