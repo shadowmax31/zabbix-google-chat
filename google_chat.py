@@ -20,9 +20,9 @@ class ChatSender:
 
     INI_FILE = '/usr/share/zabbix/alertscripts/zabbix-google-chat/google_chat.ini'
 
-    PROBLEM_IMG = 'https://raw.githubusercontent.com/ctrl-freak/zabbix-google-chat/master/images/ZV3.stop.PR.75x75.png'
-    ACK_IMG = 'https://raw.githubusercontent.com/ctrl-freak/zabbix-google-chat/master/images/ZV3.alarm.MA.75x75.png'
-    RESOLVED_IMG = 'https://raw.githubusercontent.com/ctrl-freak/zabbix-google-chat/master/images/ZV3.item.OK.75x75.png'
+    PROBLEM_IMG = 'https://raw.githubusercontent.com/shadowmax31/zabbix-google-chat/master/images/ZV3.stop.PR.75x75.png'
+    ACK_IMG = 'https://raw.githubusercontent.com/shadowmax31/zabbix-google-chat/master/images/ZV3.alarm.MA.75x75.png'
+    RESOLVED_IMG = 'https://raw.githubusercontent.com/shadowmax31/zabbix-google-chat/master/images/ZV3.item.OK.75x75.png'
 
     def __init__(self, webhook_name):
         cp = configparser.RawConfigParser()
